@@ -11,6 +11,15 @@ GraphMatrix5xN is an efficient algorithm for finding the shortest path between t
 
 ## Installation
 
+1. Clone the repository or download the ZIP archive and extract it to your desired location.
+
+```bash
+git clone https://github.com/infosave2007/graphmatrix5xn.git
+
+cd graphmatrix5xn
+
+composer install
+```
 
 
 ## Usage
