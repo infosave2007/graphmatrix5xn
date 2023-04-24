@@ -1,0 +1,10 @@
+{
+    "name": "infosave/graphmatrix",
+    "authors": [
+        {
+            "name": "Oleg Kirichenko",
+            "email": "infosave@mail.ru"
+        }
+    ],
+    "require": {}
+}
