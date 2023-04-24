@@ -66,3 +66,4 @@ Array
 This project is licensed under the MIT License.
 ```
 
+Kirichenko Oleg Urevich infosave@mail.ru
