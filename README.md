@@ -1,4 +1,3 @@
-```markdown
 # GraphMatrix5xN
 
 GraphMatrix5xN is an efficient algorithm for finding the shortest path between two nodes in a graph using a 5xN matrix structure. This algorithm was designed to solve a wide range of problems including those involving predicates and artificial intelligence.
