@@ -1,4 +1,3 @@
-Here's a basic `README.md` template for your GitHub repository that you can customize to fit your needs:
 
 ```markdown
 # GraphMatrix5xN
