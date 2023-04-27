@@ -57,14 +57,13 @@ This will output:
 ```
 Array
 (
-    [path] => Array
+   [path] => Array
         (
             [0] => A
-            [1] => B
-            [2] => C
+            [1] => C
         )
 
-    [totalWeight] => 12
+    [totalWeight] => 10
 )
 ```
 
