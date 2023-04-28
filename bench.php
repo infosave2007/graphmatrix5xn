@@ -46,6 +46,7 @@ $graphData = generateRandomGraph($numNodes, $numEdges);
 $dijkstra = new Dijkstra();
 $graph5xN = new Graph();
 
+$startMemoryDijkstra = memory_get_usage();
 foreach ($graphData['nodes'] as $node) {
     $dijkstra->addNode($node);
 }
@@ -53,10 +54,6 @@ foreach ($graphData['nodes'] as $node) {
 foreach ($graphData['edges'] as $edge) {
     $dijkstra->addEdge($edge['node1'], $edge['node2'], $edge['weight']);
 }
-
-$endMemoryDijkstra = memory_get_usage();
-$usedMemoryDijkstra = $endMemoryDijkstra - $startMemoryDijkstra;
-
 
 $endMemoryDijkstra = memory_get_usage();
 $usedMemoryDijkstra = $endMemoryDijkstra - $startMemoryDijkstra;
