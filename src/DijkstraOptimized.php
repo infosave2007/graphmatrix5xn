@@ -2,110 +2,84 @@
 
 namespace DijkstraOptimized;
 
-/**
- * Класс представляет собой граф с методом для поиска кратчайшего пути с помощью оптимизированного алгоритма Дейкстры.
- */
 class Dijkstra
 {
-    private $nodes;
-    private $edges;
+    private array $nodes = []; // An array to store nodes and their connections (edges)
 
-    public function __construct()
+    // Adds a node to the graph
+    public function addNode(string $node): void
     {
-        $this->nodes = [];
-        $this->edges = [];
+        if (!isset($this->nodes[$node])) {
+            $this->nodes[$node] = []; // Initialize the array for the node's connections
+        }
     }
 
-    /**
-     * Добавляет узел в граф.
-     *
-     * @param string $node
-     */
-    public function addNode($node)
+    // Adds an edge between two nodes with a specified weight
+    public function addEdge(string $from, string $to, int $weight): void
     {
-        $this->nodes[$node] = true;
+        $this->nodes[$from][$to] = $weight; // Add the edge from the 'from' node to the 'to' node
+        $this->nodes[$to][$from] = $weight; // Add the edge from the 'to' node to the 'from' node
     }
 
-    /**
-     * Добавляет ребро между двумя узлами с заданным весом.
-     *
-     * @param string $node1
-     * @param string $node2
-     * @param float $weight
-     */
-    public function addEdge($node1, $node2, $weight)
+    // Finds the shortest path between the start and end nodes
+    public function findShortestPath(string $start, string $end): array
     {
-        if (!isset($this->edges[$node1])) {
-            $this->edges[$node1] = [];
-        }
-        if (!isset($this->edges[$node2])) {
-            $this->edges[$node2] = [];
-        }
+        $distances = [];       // An array to store the current shortest distance to each node
+        $previousNodes = [];   // An array to store the previous node in the path for each node
+        $nodes = array_keys($this->nodes); // Get an array of all node names
 
-        $this->edges[$node1][$node2] = $weight;
-        $this->edges[$node2][$node1] = $weight;
-    }
-
-    /**
-     * Находит кратчайший путь между двумя узлами с помощью оптимизированного алгоритма Дейкстры.
-     *
-     * @param string $source
-     * @param string $target
-     * @return array
-     */
-    public function findShortestPath($source, $target)
-    {
-        $distances = [];
-        $previous = [];
-        $visited = [];
-        $unvisitedNodes = $this->nodes;
-
-        foreach ($this->nodes as $node => $_) {
-            $distances[$node] = INF;
-            $previous[$node] = null;
+        // Initialize the arrays with default values
+        foreach ($nodes as $node) {
+            $previousNodes[$node] = null; // Set the previous node for each node to null
+            $distances[$node] = INF;      // Set the initial distance for each node to infinity
         }
 
-        $distances[$source] = 0;
+        $distances[$start] = 0; // Set the initial distance for the start node to 0
 
-        while (!empty($unvisitedNodes)) {
-            $minNode = null;
-            $minDistance = INF;
+        $queue = new \SplPriorityQueue(); // Create a new priority queue
 
-            foreach ($unvisitedNodes as $node => $_) {
-                if ($distances[$node] < $minDistance) {
-                    $minDistance = $distances[$node];
-                    $minNode = $node;
-                }
-            }
+        $queue->insert($start, 0); // Insert the start node into the priority queue with a priority of 0
 
-            if ($minNode === null) {
+        // Main loop to process each node
+        while (!$queue->isEmpty()) {
+            $currentNode = $queue->extract(); // Get the node with the highest priority (lowest distance)
+
+            if ($currentNode === $end) { // If the current node is the end node, break the loop
                 break;
             }
 
-            foreach ($this->edges[$minNode] as $neighbor => $weight) {
-                $newDistance = $distances[$minNode] + $weight;
+            $neighbors = $this->nodes[$currentNode]; // Get the neighbors of the current node
+            $currentDistance = $distances[$currentNode]; // Get the current distance to the current node
+
+            // Process the neighbors of the current node
+            foreach ($neighbors as $neighbor => $weight) {
+                $newDistance = $currentDistance + $weight; // Calculate the new distance to the neighbor
+
+                // Update the distance to the neighbor if a shorter path is found
                 if ($newDistance < $distances[$neighbor]) {
-                    $distances[$neighbor] = $newDistance;
-                    $previous[$neighbor] = $minNode;
+                    $distances[$neighbor] = $newDistance; // Update the distance
+                    $previousNodes[$neighbor] = $currentNode; // Set the previous node for the neighbor
+                    $queue->insert($neighbor, -$newDistance); // Insert the neighbor with the updated distance
                 }
             }
-
-            $visited[$minNode] = true;
-            unset($unvisitedNodes[$minNode]);
         }
 
+        // Reconstruct the shortest path from the previous nodes array
         $path = [];
-        $current = $target;
+        $currentNode = $end;
 
-        while ($current !== null) {
-            array_unshift($path, $current);
-            $current = $previous[$current];
+        while ($currentNode !== null) {
+            $path[] = $currentNode; // Add the current node to the path
+            $currentNode = $previousNodes[$currentNode]; // Move to the previous node in the path
         }
 
-        return [
-            'path' => $path,
-            'totalWeight' => $distances[$target],
-        ];
-    }
+        $path = array_reverse($path);// Reverse the path to get the correct order
+
+    // Return the shortest path along with the total weight
+    return [
+        'path' => $path,
+        'totalWeight' => $distances[$end],
+    ];
+}
 }
 ?>
