@@ -34,6 +34,7 @@ function generateRandomGraph($numNodes, $numEdges)
         'edges' => $edges
     ];
 }
+//внесите значения для теста
 
 $numNodes = 10000;
 $numEdges = 50000;
