@@ -5,7 +5,7 @@ namespace DijkstraOptimized;
 /**
  * Класс Graph представляет собой граф с методом для поиска кратчайшего пути с помощью оптимизированного алгоритма Дейкстры.
  */
-class Graph
+class Dijkstra
 {
     private $nodes;
     private $edges;
