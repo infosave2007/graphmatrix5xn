@@ -5,7 +5,6 @@ namespace GraphMatrix5xN;
 class Graph
 {
     private array $nodes = []; // Array to store the nodes and their connections (edges)
-    private array $matrix = []; // Array to store the matrix representation of the graph
 
     // Adds a node to the graph
     public function addNode(string $node): void
@@ -25,48 +24,42 @@ class Graph
     // Finds the shortest path between the start and end nodes
     public function findShortestPath(string $start, string $end): array
     {
-        $visited = []; // Array to store the visited status of each node
         $distances = []; // Array to store the current shortest distance to each node
         $previousNodes = []; // Array to store the previous node in the path for each node
-        $nodes = array_keys($this->nodes);
+        $nodes = array_keys($this->nodes); // Get the list of node keys
 
         // Initialize the arrays with default values
         foreach ($nodes as $node) {
-            $visited[$node] = false;
             $previousNodes[$node] = null;
             $distances[$node] = INF;
         }
 
-        $distances[$start] = 0;
-        $currentNode = $start;
+        $distances[$start] = 0; // Set the initial distance for the start node to 0
+
+        $queue = new \SplPriorityQueue(); // Create a new priority queue
+
+        $queue->insert($start, 0); // Insert the start node into the priority queue with a priority of 0
 
         // Main loop to process each node
-        while ($currentNode !== null) {
-            $neighbors = $this->nodes[$currentNode];
-            $currentDistance = $distances[$currentNode];
+        while (!$queue->isEmpty()) {
+            $currentNode = $queue->extract(); // Get the node with the highest priority (lowest distance)
+
+            if ($currentNode === $end) { // If we've reached the end node, break the loop
+                break;
+            }
+
+            $neighbors = $this->nodes[$currentNode]; // Get the neighbors of the current node
+            $currentDistance = $distances[$currentNode]; // Get the current shortest distance for the current node
 
             // Process the neighbors of the current node
             foreach ($neighbors as $neighbor => $weight) {
-                $newDistance = $currentDistance + $weight;
+                $newDistance = $currentDistance + $weight; // Calculate the new distance for the neighbor node
 
                 // Update the distance to the neighbor if a shorter path is found
                 if ($newDistance < $distances[$neighbor]) {
                     $distances[$neighbor] = $newDistance;
                     $previousNodes[$neighbor] = $currentNode;
-                }
-            }
-
-            // Mark the current node as visited
-            $visited[$currentNode] = true;
-
-            // Find the next unvisited node with the shortest distance
-            $currentNode = null;
-            $minDistance = INF;
-
-            foreach ($nodes as $node) {
-                if (!$visited[$node] && $distances[$node] < $minDistance) {
-                    $currentNode = $node;
-                    $minDistance = $distances[$node];
+                    $queue->insert($neighbor, -$newDistance); // Insert the neighbor into the priority queue with a negative priority (lower distance means higher priority)
                 }
             }
         }
@@ -82,6 +75,7 @@ class Graph
 
         // Reverse the path and return it along with the total weight
         $path = array_reverse($path);
+
         return [
             'path' => $path,
             'totalWeight' => $distances[$end],
